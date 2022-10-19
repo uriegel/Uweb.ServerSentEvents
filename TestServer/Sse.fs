@@ -21,4 +21,6 @@ type SseEvent =
 
 let sseSubject = new Subject<SseEvent>()
 
+let sendEvent text = 
+    sseSubject.OnNext (Message text)
 let sse () = Sse.create sseSubject <| getJsonOptions ()

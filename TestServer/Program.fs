@@ -59,7 +59,10 @@ Host.CreateDefaultBuilder()
 
 Client.test () 
 |> Async.AwaitTask 
-|> Async.RunSynchronously
+|> Async.StartImmediate
+
+while true do
+    sendEvent <| System.Console.ReadLine ()
 
 
 

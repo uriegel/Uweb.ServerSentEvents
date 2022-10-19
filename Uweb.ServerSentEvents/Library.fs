@@ -4,14 +4,18 @@ open System
 open System.IO
 open System.Net.Http
 open System.Net.Http.Json
+open System.Net.Http.Headers
+open System.Threading.Tasks
 
 module Client =
-    open System.Threading.Tasks
+    
     
     let test () = task { 
         let client = new HttpClient()
         client.Timeout <- TimeSpan.FromSeconds(30)
+        client.DefaultRequestHeaders.Accept.Add(MediaTypeWithQualityHeaderValue("text/event-stream"))
         let url = "http://localhost:5000/sse"
+        //let url = "https://hacker-news.firebaseio.com/v0/updates.json"
 
         while true do
             try 
@@ -20,7 +24,9 @@ module Client =
                 use streamReader = new StreamReader(stream)
                 while not streamReader.EndOfStream do
                     let! msg = streamReader.ReadLineAsync()
-                    printfn "Event: %s" msg
+                    if msg.StartsWith "data:" && not (msg = "data: null") then
+                        printfn "%s" <| msg.Substring 5
+                        printfn "---------------------------------------"
             with
                 | :? TaskCanceledException -> ()
                 | _ as e -> eprintfn "%s" <| e.ToString ()
