@@ -1,0 +1,5 @@
+TestServer/appsettings.Development.json
+TestServer/appsettings.json
+TestServer/bin
+TestServer/obj
+Uweb.ServerSentEvents/obj
