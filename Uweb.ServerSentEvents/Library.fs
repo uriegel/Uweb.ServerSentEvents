@@ -14,7 +14,8 @@ module Client =
         let client = new HttpClient()
         client.Timeout <- TimeSpan.FromSeconds(30)
         client.DefaultRequestHeaders.Accept.Add(MediaTypeWithQualityHeaderValue("text/event-stream"))
-        let url = "http://localhost:5000/sse"
+        //let url = "http://localhost:5000/sse"
+        let url = "http://192.168.178.42:8080/sse"
         //let url = "https://hacker-news.firebaseio.com/v0/updates.json"
 
         while true do
@@ -29,5 +30,7 @@ module Client =
                         printfn "---------------------------------------"
             with
                 | :? TaskCanceledException -> ()
-                | _ as e -> eprintfn "%s" <| e.ToString ()
+                | _ as e -> 
+                    eprintfn "%s" <| e.ToString ()
+                    do! Task.Delay 5000
     }
