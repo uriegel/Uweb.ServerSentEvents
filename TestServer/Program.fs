@@ -8,6 +8,7 @@ open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
 
 open Sse
+open Uweb.ServerSentEvents
 
 let configureKestrel (options: KestrelServerOptions) = 
     options.ListenAnyIP 5000
@@ -36,7 +37,7 @@ let configureLogging (builder : ILoggingBuilder) =
 let configureRoutes (app : IApplicationBuilder) = 
     let routes =
         choose [  
-            route  "/commander/sse" >=> warbler (fun _ -> sse ())
+            route  "/sse" >=> warbler (fun _ -> sse ())
             route "/test"   >=> text "This is a Test Site for Uweb.ServerSentEvents "
         ]
     app
@@ -54,7 +55,12 @@ let webHostBuilder (webHostBuilder: IWebHostBuilder) =
 Host.CreateDefaultBuilder()
     .ConfigureWebHostDefaults(webHostBuilder)
     .Build()    
-    .Run()
+    .Start()
+
+Client.test () 
+|> Async.AwaitTask 
+|> Async.RunSynchronously
+
 
 
 
