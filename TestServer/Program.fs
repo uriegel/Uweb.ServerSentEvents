@@ -1,5 +1,4 @@
 open FSharpTools
-open FSharpTools.Functional
 open Giraffe
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
@@ -7,20 +6,8 @@ open Microsoft.AspNetCore.Server.Kestrel.Core
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
-open System.Reactive.Subjects
-open System.Text.Encodings.Web;
-open System.Text.Json
-open System.Text.Json.Serialization
 
-let getJsonOptions = 
-    let getJsonOptions () = 
-        let jsonOptions = JsonSerializerOptions()
-        jsonOptions.PropertyNamingPolicy <- JsonNamingPolicy.CamelCase
-        jsonOptions.Encoder <- JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-        jsonOptions.DefaultIgnoreCondition <- JsonIgnoreCondition.WhenWritingNull
-        jsonOptions.Converters.Add(JsonFSharpConverter())
-        jsonOptions
-    memoizeSingle getJsonOptions
+open Sse
 
 let configureKestrel (options: KestrelServerOptions) = 
     options.ListenAnyIP 5000
@@ -45,15 +32,6 @@ let configureLogging (builder : ILoggingBuilder) =
 
            // Add additional loggers if wanted...
     |> ignore
-
-
-type RendererEvent = 
-    | ThemeChanged of string
-    | Nothing
-
-let rendererReplaySubject = new Subject<RendererEvent>()
-
-let sse () = Sse.create rendererReplaySubject <| getJsonOptions ()
 
 let configureRoutes (app : IApplicationBuilder) = 
     let routes =

@@ -3,3 +3,4 @@ TestServer/appsettings.json
 TestServer/bin
 TestServer/obj
 Uweb.ServerSentEvents/obj
+Uweb.ServerSentEvents/bin
